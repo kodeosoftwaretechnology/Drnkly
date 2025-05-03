@@ -19,7 +19,7 @@ function Login({ onLogin }: LoginProps) {
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^[0-9]{10}$/;
+
 
     if (!email) {
       return 'Email or mobile number is required';

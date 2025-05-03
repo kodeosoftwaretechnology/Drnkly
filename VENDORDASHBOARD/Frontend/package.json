@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "base" : "/vendor/"
+    "preview": "vite preview"
+   
 
   },
   "dependencies": {
