@@ -936,15 +936,7 @@ const Orders: React.FC = () => {
             </>
           )}
 
-          {!isPastOrder && hasAcceptedItems && !hasHandedOverItems && (
-            <Button
-              variant="primary"
-              icon={<Truck className="w-4 h-4" />}
-              onClick={() => handleOrderHandover(order)}
-            >
-              Hand Over All
-            </Button>
-          )}
+          
         </div>
       </div>
     );
