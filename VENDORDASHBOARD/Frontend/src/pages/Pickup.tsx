@@ -364,6 +364,10 @@ const Pickup: React.FC = () => {
                     <p style={{ margin: '4px 0', fontSize: '14px' }}>
                       <strong>Ready by:</strong> {new Date(group.readyTime).toLocaleTimeString()}
                     </p>
+                    <p style={{ margin: '4px 0', fontSize: '14px' }}>
+  <strong>Accepted At:</strong> {group.acceptedAt ? new Date(group.acceptedAt).toLocaleString() : 'N/A'}
+</p>
+
                   </div>
                   <Package className="w-8 h-8 text-blue-600" />
                 </div>
