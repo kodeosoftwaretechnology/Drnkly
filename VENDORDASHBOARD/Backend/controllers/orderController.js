@@ -108,7 +108,11 @@ router.put('/orders/:orderId/status', authenticateVendor, async (req, res) => {
               item.productId.toString() === productId &&
               (await Product.findOne({ _id: productId, vendorId }))
           ) {
-              item.status = status; // ✅ set status
+              item.status = status;
+if (status === 'accepted') {
+    item.acceptedAt = new Date(); // ✅ set acceptedAt timestamp
+}
+
               updated = true;
               break;
           }
@@ -153,7 +157,9 @@ router.put('/orders/:orderId/status', authenticateVendor, async (req, res) => {
               customerAddress: `${order.deliveryAddress?.street}, ${order.deliveryAddress?.city}`,
               orderId: order._id,
               totalAmount: item.price * item.quantity,
-              readyTime: order.createdAt, // you can adjust this if you track a separate ready time
+              readyTime: order.createdAt,
+              acceptedAt: item.acceptedAt,
+
             });
           }
         }

@@ -34,7 +34,8 @@ const orderSchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'delivered'],
         default: 'pending'
-      }
+      },
+      acceptedAt: { type: Date }
     }
   ],
   deliveryAddress: {
