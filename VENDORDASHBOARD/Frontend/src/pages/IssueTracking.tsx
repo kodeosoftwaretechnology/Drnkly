@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 interface Issue {
   _id: string;
@@ -30,11 +31,12 @@ const IssueTracking: React.FC = () => {
     const fetchIssues = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const res = await fetch('https://vendor.peghouse.in/api/issues/my', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await fetch(`${API_BASE_URL}/api/issues/my`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+
 
         if (!res.ok) throw new Error('Failed to fetch issues');
 
