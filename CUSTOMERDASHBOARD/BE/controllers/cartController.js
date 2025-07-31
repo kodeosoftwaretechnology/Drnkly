@@ -12,13 +12,13 @@ exports.addToCart = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    // Check if product is Old Monk 180 ml
-    const isOldMonk180 = product.name.toLowerCase().includes('old monk') && product.volume === 180;
+    // Check if product is Old Monk 180 ml (free item)
+    const isOldMonk180 = product.name.toLowerCase().includes('old monk') && product.volume === 180 && price === 0;
 
     let cart = await Cart.findOne({ userId });
 
     if (!cart) {
-      // Create new cart with this product
+      // ✅ Create new cart with this product
       const newCart = await Cart.create({
         userId,
         items: [{ productId, name, price, image, quantity: 1 }]
@@ -33,22 +33,22 @@ exports.addToCart = async (req, res) => {
       return res.status(201).json({ message: 'Cart created', cart: populatedCart });
     }
 
-    // Check if Old Monk 180ml is already in the cart (fresh from DB)
-    const oldMonkInCart = cart.items.some(item => {
-      const isOldMonkItem = item.productId.toString() === productId && isOldMonk180;
-      return isOldMonkItem;
-    });
+    // ✅ Check if a free Old Monk 180ml is already in cart (based on name + price)
+    const oldMonkInCart = cart.items.some(item =>
+      item.name.toLowerCase().includes('old monk') &&
+      item.price === 0 &&
+      product.volume === 180
+    );
 
     if (isOldMonk180 && oldMonkInCart) {
-      // Prevent adding duplicate 180ml Old Monk
       return res.status(400).json({ message: '180ml Old Monk can only be added once' });
     }
 
-    // Check if the product already exists in the cart
+    // ✅ Check if the same product ID already exists in cart
     const existingItem = cart.items.find(item => item.productId.toString() === productId);
 
     if (existingItem) {
-      // For other products increment quantity normally
+      // For non-duplicate Old Monk or other products, increment quantity
       existingItem.quantity += 1;
     } else {
       // Add new product to cart
@@ -70,6 +70,7 @@ exports.addToCart = async (req, res) => {
     return res.status(500).json({ message: 'Error adding to cart', error: error.message });
   }
 };
+
 
 
 

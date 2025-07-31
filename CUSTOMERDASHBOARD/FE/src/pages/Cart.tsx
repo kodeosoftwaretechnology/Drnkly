@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCart } from '../context/CartContext';
 
+
 const Cart = () => {
   const navigate = useNavigate();
   const { items, setItems: setContextItems, clearCart: clearContextCart } = useCart();
@@ -29,6 +30,7 @@ const Cart = () => {
   const [couponError, setCouponError] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [discountAmount, setDiscountAmount] = useState(0);
+  const [showOldMonkModal, setShowOldMonkModal] = useState(false);
 
   // Initialize Facebook Pixel
   useEffect(() => {
@@ -530,33 +532,74 @@ const handleApplyCoupon = async () => {
               
 
               <button
-                onClick={() => {
-                  if (isShopClosed()) {
-                    setShowShopClosed(true);
-                    return;
-                  }
-                  // Track InitiateCheckout event for Facebook Pixel
-                  if (window && (window as any).fbq) {
-                    (window as any).fbq('track', 'InitiateCheckout', {
-                      content_type: 'product',
-                      contents: items.map(item => ({
-                        id: item.productId,
-                        quantity: Number(item.quantity)
-                      })),
-                      num_items: items.length,
-                      currency: 'INR',
-                      value: finalTotal
-                    });
-                  }
-                  navigate('/checkout');
-                }}
-                className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors"
-              >
-                Proceed to Checkout
-              </button>
+  onClick={() => {
+    if (isShopClosed()) {
+      setShowShopClosed(true);
+      return;
+    }
+
+    // ❌ Restriction: Prevent checkout if only free Old Monk 180ml is in cart
+    const onlyFreeOldMonkInCart = items.length === 1 &&
+      items[0].name?.toLowerCase().includes('old monk') &&
+      items[0].price === 0 &&
+      items[0].quantity === 1;
+
+   if (onlyFreeOldMonkInCart) {
+  setShowOldMonkModal(true);
+  return;
+}
+
+
+    // ✅ Facebook Pixel tracking
+    if (window && (window as any).fbq) {
+      (window as any).fbq('track', 'InitiateCheckout', {
+        content_type: 'product',
+        contents: items.map(item => ({
+          id: item.productId,
+          quantity: Number(item.quantity)
+        })),
+        num_items: items.length,
+        currency: 'INR',
+        value: finalTotal
+      });
+    }
+
+    // ✅ Navigate to checkout
+    navigate('/checkout');
+  }}
+  className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors"
+>
+  Proceed to Checkout
+</button>
+
             </div>
           )}
         </div>
+       {showOldMonkModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full text-center">
+      <div className="flex flex-col items-center mb-4">
+        <span className="text-3xl">⚠️</span>
+        <h3 className="text-lg font-bold mt-2">Required</h3>
+      </div>
+      <p className="mb-6 text-gray-700">
+        You cannot proceed with only the free <strong>Old Monk</strong>.<br />
+        Please add at least one other product to your cart.
+      </p>
+      <button
+        onClick={() => {
+          setShowOldMonkModal(false);
+          navigate('/products'); // 👈 Navigate to products page
+        }}
+        className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+      >
+        Got it
+      </button>
+    </div>
+  </div>
+)}
+
+
 
         {/* Shop Closed Modal */}
         {showShopClosed && (
