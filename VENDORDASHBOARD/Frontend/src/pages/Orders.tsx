@@ -157,8 +157,6 @@ const Orders: React.FC = () => {
   const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
-  const [liveOrdersExpanded, setLiveOrdersExpanded] = useState(true);
-  const [pastOrdersExpanded, setPastOrdersExpanded] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [error, setError] = useState('');
   const [newOrders, setNewOrders] = useState<Order[]>([]);
@@ -1237,78 +1235,29 @@ const Orders: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="bg-white rounded-2xl shadow-xl border border-gray-200 mb-8 overflow-hidden">
-          <div 
-            className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6 cursor-pointer hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
-            onClick={() => setLiveOrdersExpanded(!liveOrdersExpanded)}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
-                <h2 className="text-2xl font-bold text-white">Live Orders</h2>
-                <span className="bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm font-medium">
-                  {liveOrders.length} Active
-                </span>
-              </div>
-              <div className={`transform transition-transform duration-200 ${liveOrdersExpanded ? 'rotate-180' : ''}`}>
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
+            <div className="flex items-center gap-4">
+              <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
+              <h2 className="text-2xl font-bold text-white">Live Orders</h2>
+              <span className="bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm font-medium">
+                {liveOrders.length} Active
+              </span>
             </div>
           </div>
 
-          {liveOrdersExpanded && (
-            <div className="p-8">
-              {liveOrders.length === 0 ? (
-                <div className="text-center py-16">
-                  <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-600 mb-2">No Live Orders</h3>
-                  <p className="text-gray-500">New orders will appear here automatically</p>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {liveOrders.map((order, index) => renderOrderCard(order, index))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 mb-8 overflow-hidden">
-          <div 
-            className="bg-gradient-to-r from-green-600 to-green-700 px-8 py-6 cursor-pointer hover:from-green-700 hover:to-green-800 transition-all duration-200"
-            onClick={() => setPastOrdersExpanded(!pastOrdersExpanded)}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Package className="w-6 h-6 text-white" />
-                <h2 className="text-2xl font-bold text-white">Past Orders</h2>
-                <span className="bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm font-medium">
-                  {pastOrders.length} Completed
-                </span>
+          <div className="p-8">
+            {liveOrders.length === 0 ? (
+              <div className="text-center py-16">
+                <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-600 mb-2">No Live Orders</h3>
+                <p className="text-gray-500">New orders will appear here automatically</p>
               </div>
-              <div className={`transform transition-transform duration-200 ${pastOrdersExpanded ? 'rotate-180' : ''}`}>
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+            ) : (
+              <div className="space-y-6">
+                {liveOrders.map((order, index) => renderOrderCard(order, index))}
               </div>
-            </div>
+            )}
           </div>
-
-          {pastOrdersExpanded && (
-            <div className="p-8">
-              {pastOrders.length === 0 ? (
-                <div className="text-center py-16">
-                  <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-600 mb-2">No Past Orders</h3>
-                  <p className="text-gray-500">Completed orders will appear here</p>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {pastOrders.map((order, index) => renderOrderCard(order, index, true))}
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
